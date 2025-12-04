@@ -1,15 +1,20 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import  AppSideBar  from "@/components/appsidebar"
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import AppSideBar from "@/components/appsidebar";
+import { Toaster } from "@/components/ui/sonner";
 
-export default function DashboardLayout({children}: {children: React.ReactNode}) {
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-
     <SidebarProvider>
-      <AppSideBar/>
+      <AppSideBar />
       <main>
-      <SidebarTrigger/>
-      {children}
+        <SidebarTrigger />
+        {children}
+        <Toaster position="top-center" closeButton={true} />
       </main>
     </SidebarProvider>
-  )
+  );
 }
