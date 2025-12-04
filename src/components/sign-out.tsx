@@ -22,7 +22,7 @@ import { createClient } from "@/utils/supabase/client";
 import { toast } from "sonner";
 import { useLoginState } from "@/store/useLoginState";
 import { useRouter } from "next/navigation";
-import { AuthError, User } from "@supabase/supabase-js";
+import { AuthError, Provider, User } from "@supabase/supabase-js";
 
 const signOutSchema = z.object({
   fistName: z
@@ -44,16 +44,16 @@ const signOutSchema = z.object({
 
 export default function SignOutComponent() {
   const [loading, setLoading] = useState<boolean>(false);
-  const { setUser , setLogin} = useLoginState();
-  const router = useRouter()
+  const { setUser, setLogin } = useLoginState();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof signOutSchema>>({
     resolver: zodResolver(signOutSchema),
     defaultValues: {
       fistName: "Van",
       lastName: "Minh",
-      email: "asasda@aas.com",
-      password: "F111sds",
+      email: "vanminhtruong678@gmail.com",
+      password: "hehe@123",
     },
   });
 
@@ -74,34 +74,41 @@ export default function SignOutComponent() {
         },
       },
     });
-    if (data) {
-      toast.success("Đăng ký thành công!", {
-        description: <p className="text-stone-900">Chúc mừng {dataSignOut.fistName} đăng ký thành công!</p>,
-      });
-      setUser(data);
-      setLogin();
-      router.push('/dashboard')
-    }
-    if (error) {
-      toast.error("Đăng ký thất bại", {
-        description: <p className="text-red-500">{error.message}</p>
-      });
-    }
+    handleDataLogin(data.user, error);
     setLoading(false);
   };
 
-  const signOutByGoogle = async () => {
-      const supabase = await createClient();
+  const signOutByThirdParty = async (provider: Provider) => {
+    setLoading(true);
+    const supabase = await createClient();
+    await supabase.auth.signInWithOAuth({
+      provider: provider,
+      options: {
+        redirectTo: "http://localhost:3000/auth/callback",
+      },
+    });
+    setLoading(false);
+  };
 
-      const {data, error} = await supabase.auth.signInWithOAuth({
-        provider: 'google'
+  const handleDataLogin = (data: any, error: any) => {
+    if (data) {
+      toast.success("Đăng ký thành công!", {
+        description: (
+          <p className="text-stone-900">
+            Chúc mừng {data?.user_metadata?.fistName} đăng ký thành công!
+          </p>
+        ),
       });
-
-  }
-
-  const handleDataLogin = (data: User, error: AuthError) => {
-
-  }
+      setUser(data);
+      setLogin();
+      router.push("/dashboard");
+    }
+    if (error) {
+      toast.error("Đăng ký thất bại", {
+        description: <p className="text-red-500">{error?.message}</p>,
+      });
+    }
+  };
 
   return (
     <Card className="w-full shadow-xl max-w-[400px] gap-0 pb-0">
@@ -119,6 +126,7 @@ export default function SignOutComponent() {
           <Button
             variant="outline"
             className="p-0 shadow-sm font-normal text-muted bg-zinc-900 cursor-pointer flex-1 hover:bg-zinc-900 hover:text-white"
+            onClick={() => signOutByThirdParty('github')}
           >
             <Github />
             Github
@@ -126,7 +134,7 @@ export default function SignOutComponent() {
           <Button
             variant="outline"
             className=" shadow-sm cursor-pointer flex-1 font-normal p-0"
-            onClick={() => signOutByGoogle()}
+            onClick={() => signOutByThirdParty('google')}
           >
             <Eclipse />
             Google

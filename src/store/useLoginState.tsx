@@ -11,5 +11,6 @@ export const useLoginState = create<IUseLoginStateType>((set) => ({
   isLogin: false,
   user: null,
   setLogin: () => set((state: any) => ({ isLogin: true })),
-  setUser: () => set((state: any) => ({ user: state.user })),
+  setUser: (data) => set((state: any) => ({
+    user: data })),
 }));
