@@ -15,7 +15,7 @@ export default function ThirdPartyAuth() {
       const { data, error }  = await supabase.auth.getUser();
       if(!error || data.user != null) {
         setUser(data.user);
-        setLogin();
+        setLogin(true);
         route.replace('/dashboard')
       }else {
         route.replace('/auth/sign-in#error=1&error_description="Invalid User Data')

@@ -100,7 +100,7 @@ export default function SignOutComponent() {
         ),
       });
       setUser(data);
-      setLogin();
+      setLogin(true);
       router.push("/dashboard");
     }
     if (error) {

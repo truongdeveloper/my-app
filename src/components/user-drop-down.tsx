@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,8 +12,15 @@ import {
 } from "@radix-ui/react-dropdown-menu";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { AvatarFallback } from "@radix-ui/react-avatar";
-import { Bell, ChevronsUpDown, CircleUser, CreditCard, LogOut } from "lucide-react";
+import {
+  Bell,
+  ChevronsUpDown,
+  CircleUser,
+  CreditCard,
+  LogOut,
+} from "lucide-react";
 import { useLoginState } from "@/store/useLoginState";
+import { createClient } from "@/utils/supabase/client";
 
 const listData = [
   {
@@ -35,14 +42,21 @@ const listData = [
 
 export default function UserNav(props: any) {
 
-  const { user } = useLoginState();
-  console.log(user)
+  // TO DO: The State in there is not working right because logic of global state.
+  const {setUser, user, isLogin, setLogin } = useLoginState();
 
-    const defaultData = {
+  const defaultData = {
     avatar: user?.user_metadata?.picture ?? "https://github.com/shadcn.png",
     name: user?.user_metadata?.full_name ?? "Default Name",
     email: user?.user_metadata?.email ?? "Default email",
   };
+
+  const handleLogOut = async () => {
+    const supabase = await createClient();
+    await supabase.auth.signOut();
+    setUser(null);
+    setLogin(false);
+  }
 
   return (
     <SidebarMenu>
@@ -80,9 +94,9 @@ export default function UserNav(props: any) {
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer">
-              <LogOut/>
-              Sign out
+            <DropdownMenuItem className="cursor-pointer" onClick={() => handleLogOut()}>
+              <LogOut />
+              Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

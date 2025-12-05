@@ -1,5 +1,4 @@
 "use client";
-import { Label } from "@radix-ui/react-label";
 import { Github, Eclipse, Triangle } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -10,10 +9,8 @@ import {
   CardContent,
   CardFooter,
 } from "./ui/card";
-import { Input } from "./ui/input";
-// import InputCustom from "./common/InputCustom";
-import { useForm, useWatch } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { FieldGroup } from "./ui/field";
 import InputCustom from "./common/InputCustom";
 import Link from "next/link";
@@ -21,6 +18,7 @@ import React from "react";
 import { Spinner } from "./ui/spinner";
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "sonner";
+import { Provider } from "@supabase/auth-js/dist/module/lib/types";
 
 export default function SignInComponent() {
 
@@ -43,11 +41,9 @@ export default function SignInComponent() {
       password: dataSignIn.password
     })
     if (data) {
-      
       toast.success("Đăng nhập thành công!", {
         description: <p className="text-stone-900">Xin chào {data.user?.user_metadata?.fistName} {data.user?.user_metadata?.lastName}.</p>,
       });
-
     }
     if (error) {
       toast.error("Đăng nhập thất bại", {
@@ -55,8 +51,19 @@ export default function SignInComponent() {
       });
     }
     setLoading(false);
-    
   }
+
+    const signOutByThirdParty = async (provider: Provider) => {
+      setLoading(true);
+      const supabase = await createClient();
+      await supabase.auth.signInWithOAuth({
+        provider: provider,
+        options: {
+          redirectTo: "http://localhost:3000/auth/callback",
+        },
+      });
+      setLoading(false);
+    };
 
   return (
     <Card className="w-full shadow-xl max-w-[400px] gap-0 pb-0">
@@ -72,6 +79,7 @@ export default function SignInComponent() {
         <div className="flex gap-3 pl-4 pr-4">
           <Button
             variant="outline"
+            onClick={() => signOutByThirdParty('github')}
             className="p-0 shadow-sm font-normal text-muted bg-zinc-900 cursor-pointer flex-1 hover:bg-zinc-900 hover:text-white"
           >
             <Github />
@@ -79,6 +87,7 @@ export default function SignInComponent() {
           </Button>
           <Button
             variant="outline"
+            onClick={() => signOutByThirdParty('google')}
             className=" shadow-sm cursor-pointer flex-1 font-normal p-0"
           >
             <Eclipse />

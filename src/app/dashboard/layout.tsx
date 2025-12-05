@@ -1,6 +1,7 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AppSideBar from "@/components/appsidebar";
 import { Toaster } from "@/components/ui/sonner";
+import Header from "@/components/header";
 
 export default function DashboardLayout({
   children,
@@ -11,8 +12,8 @@ export default function DashboardLayout({
     <SidebarProvider>
       <AppSideBar />
       <main>
-        <SidebarTrigger />
-        {children}
+        <Header />
+          {children}
         <Toaster position="top-center" closeButton={true} />
       </main>
     </SidebarProvider>
