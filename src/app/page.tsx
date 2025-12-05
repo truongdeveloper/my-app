@@ -11,7 +11,8 @@ export default function Home() {
     const isLogin = async () => {
       const supabase = await createClient();
       const {data, error} = await supabase.auth.getUser();
-      if(!error) {
+      console.log(data, error)
+      if(error) {
         route.replace('/auth/sign-in')
       }
       if(data.user) {
