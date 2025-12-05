@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { useLoginState } from "@/store/useLoginState";
 import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
 
 const listData = [
   {
@@ -44,6 +45,7 @@ export default function UserNav(props: any) {
 
   // TO DO: The State in there is not working right because logic of global state.
   const {setUser, user, isLogin, setLogin } = useLoginState();
+  const router = useRouter();
 
   const defaultData = {
     avatar: user?.user_metadata?.picture ?? "https://github.com/shadcn.png",
@@ -56,6 +58,7 @@ export default function UserNav(props: any) {
     await supabase.auth.signOut();
     setUser(null);
     setLogin(false);
+    router.replace('/auth/sign-in')
   }
 
   return (
