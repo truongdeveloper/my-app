@@ -100,7 +100,7 @@ export default function SignInComponent() {
             or
           </div>
           <div className="h-[0.4px] w-1/2 bg-muted-foreground"></div>
-        </div>face
+        </div>
         <div className="input-field flex gap-3 flex-col">
           <form id="form-sign-in" onSubmit={form.handleSubmit(onSubmit)}>
             <FieldGroup>

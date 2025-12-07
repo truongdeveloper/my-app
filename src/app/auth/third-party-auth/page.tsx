@@ -7,7 +7,7 @@ import { useEffect } from "react"
 export default function ThirdPartyAuth() {
 
   const { setLogin , setUser } = useLoginState();
-  const route = useRouter()
+  const route = useRouter();
 
   useEffect(() => {
     const handleDataLogin = async () => {
